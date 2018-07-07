@@ -37,8 +37,8 @@ def myDownload(bot, update):
 """
     #SUPONGO QUE ES UNA FOTO
     if update.message.photo:
-        print ('Download in process')
-        update.message.reply_text('Descarga en proceso...')
+       # print ('Download in process')
+      #  update.message.reply_text('Descarga en proceso...')
     
         _dir = 'Downloads/' # my dir were bot is executing to save de photos
 
@@ -53,9 +53,9 @@ def myDownload(bot, update):
         file_down = bot.get_file(file_id)
         file_down.download(path)
         update.message.reply_text('Voy a ver si lo subo al dropbox')
-        myUpload( path , "fotillo.png")
+        myUpload( path , "/fotillo.png")
     
-        update.message.reply_text('Descarga finalizada, muchas gracias por colaborar en nuestro repositorillo,besito psicológico pa\' ti :kissing_heart: ')
+        update.message.reply_text('Descarga finalizada, muchas gracias por colaborar en nuestro repositorillo,besito psicológico pa\' ti: ')
         print('Photo has been downloaded')
 
         # AÑADIR FUNCIÓN PARA SUBIR ALMACENAMIENTO
