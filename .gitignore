@@ -1,8 +1,9 @@
 # Byte-compiled / optimized / DLL files
 
 _config.py
-underbot_key.md
+_underbot_key.md
 _token_bot.py
+Downloads/
 *~
 
 __pycache__/
