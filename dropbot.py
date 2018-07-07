@@ -16,6 +16,7 @@ BACKUPPATH = '/photo.png'
 
 # Uploads contents of LOCALFILE to Dropbox
 def backup():
+    print(f"El fichero que se va a subir es {LOCALFILE}")
     with open(LOCALFILE, 'rb') as f:
         # We use WriteMode=overwrite to make sure that the settings in the file
         # are changed on upload
@@ -65,6 +66,39 @@ def select_revision():
     # Return the oldest revision (first entry, because revisions was sorted oldest:newest)
     return revisions[0].rev
 
+def myUpload( _LOCALFILE , _BACKUPPATH):
+    
+    LOCALFILE =_LOCALFILE
+    BACKUPPATH = _BACKUPPATH
+        # Check for an access token
+    if (len(TOKEN) == 0):
+        sys.exit("ERROR: Looks like you didn't add your access token. ")
+
+    # Create an instance of a Dropbox class, which can make requests to the API.
+    print("Creating a Dropbox object...")
+    dbx = dropbox.Dropbox(TOKEN)
+
+    # Check that the access token is valid
+    try:
+        dbx.users_get_current_account()
+    except AuthError as err:
+        sys.exit("ERROR: Invalid access token; try re-generating an "
+            "access token from the app console on the web.")
+
+    print("Primer cambio")
+    # Create a backup of the current settings file
+    backup()
+    print("segundo cambio")
+    # Change the user's file, create another backup
+    change_local_file("updated")
+    backup()
+
+    # Restore the local and Dropbox files to a certain revision
+    to_rev = select_revision()
+    restore(to_rev)
+    print("Done!")
+
+    
 if __name__ == '__main__':
     # Check for an access token
     if (len(TOKEN) == 0):
@@ -92,4 +126,6 @@ if __name__ == '__main__':
     to_rev = select_revision()
     restore(to_rev)
 
-print("Done!")
+    print("Done!")
+
+
