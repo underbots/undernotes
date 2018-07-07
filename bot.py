@@ -3,13 +3,14 @@
 # Authors: Ric y Blanca
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from dropbot import myUpload
-from _token_bot import TOKEN_BOT
+from platform.dropbox import upload_to_dropbox
+from platform.drive import upload_to_drive
+from _config import TOKEN
 
 
 def start(bot, update):
     msg = (f"Hola {update.message.from_user.first_name}, "
-           "bienvenido a nuestra secta <3."
+           "bienvenido a nuestra secta <3.\n"
            "¿Quieres colaborar en los apuntes?")
     update.message.reply_text(msg)
 
@@ -21,45 +22,39 @@ def help(bot, update):
 def upload(bot, update):
     """Descarga el archivo enviado y lo sube a la plataforma"""
 
-    prefix = 'Downloads/'
+    prefix = 'downloads/'
+
+    # Elegir plataforma
+    upload_file = upload_to_drive
+
+    update.message.reply_text("Marchando, a ver si lo subo")
     if update.message.photo:
 
         photo = update.message.photo[-1]
-        # Añadir interfaz
-
-        # Preguntar por el nombre de la foto
-        update.message.reply_text("¿Cómo dice que se llama esta foto?")
-        path = prefix + "cambiar_nombre.png"
+        # Preguntar por el nombre de la foto y modificar
+        path = prefix + "photo.png"
 
         file_id = photo.file_id
         file_down = bot.get_file(file_id)
         file_down.download(path)
-
-        update.message.reply_text("Voy a ver si lo subo al dropbox")
-        myUpload(path, "fotillo.png")
-
-        msg = ("Descarga finalizada, muchas gracias por colaborar "
-               "en nuestro repositorillo, besito psicológico para *ti* :)")
-
-        update.message.reply_text(msg)
-        print("Foto descargada")
-
-        # Upload?
 
     elif update.message.document:
 
         doc = update.message.document
         path = prefix + doc.file_name
 
-        file_id = doc.file_id()
+        file_id = doc.file_id
+        file_down = bot.get_file(file_id)
         file_down.download(path)
 
-        print(f"Archivo {doc.file_name} descargado :) ")
+    upload_file(path)
+    msg = ("Subida finalizada, muchas gracias por colaborar "
+           "en nuestro repositorillo, besito psicológico para *ti* :)")
 
-        # Upload?
+    update.message.reply_text(msg)
 
 
-updater = Updater(TOKEN_BOT)
+updater = Updater(TOKEN)
 
 # Filtrar mensajes con documentos o fotos
 notes = MessageHandler(Filters.photo | Filters.document, upload)

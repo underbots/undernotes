@@ -3,7 +3,8 @@
 _config.py
 _underbot_key.md
 _token_bot.py
-Downloads/
+downloads/
+client_secrets.json
 *~
 
 __pycache__/
