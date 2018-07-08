@@ -12,10 +12,12 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Rege
 
 from general_info import help_ms
 from _token_bot import TOKEN_BOT
+from platform.dropbox import upload_to_dropbox
+
 
 ############### GENERAL DEFINITIONS ################
 
-CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
+CHOOSING, TYPING_NAME, TYPING_CHOICE = range(3)
 
 reply_keyboard = [['upload', 'download'],
                   ['Done']]
@@ -23,18 +25,22 @@ markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
 ################## OPTIONS' FUNTIONS ######################
 
-def upload(bot, update, user_data):
+def upload(bot, update):
     """
     Sent a massege quering for file's name
 """
     option = update.message.text
     update.message.reply_text(f'Let {option}, First tell me what it is')
 
-    return TYPING_REPLY  #go to received_information
+    return TYPING_NAME  #go to received_information
 
-def received_information(bot,update , user_data):
-    """get the name 
+def name_introduction(bot, update , file_name):
+    """get the name and upload to platform
 """
+    file_name = update.message.text
+    update.message.reply_text( f' El archivo {file_name} ha sido subido con éxito')
+    
+    return CHOOSING
 ###########################################################    
 
 def main():
@@ -44,7 +50,7 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    # Add conversation handler with the states GENDER, PHOTO, LOCATION and BIO
+    # Add conversation handler with the states
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
 
@@ -52,8 +58,8 @@ def main():
             CHOOSING: [RegexHandler('^upload$',upload ,pass_user_data=True)
             ],
 
-            TYPING_CHOICE: [MessageHandler(Filters.text,
-                                           regular_choice,
+            TYPING_NAME: [MessageHandler(Filters.text,
+                                           name_introduction,
                                            pass_user_data=True),
                             ],
 

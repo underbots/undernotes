@@ -1,6 +1,9 @@
 #!usr/bin/env python
 
 # Authors: Ric y Blanca
+# file : bot.py
+# Description:
+# Telegram-bot who upload files and photos to dropbox or drive
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from platform.dropbox import upload_to_dropbox
@@ -31,9 +34,10 @@ def upload(bot, update):
     if update.message.photo:
 
         photo = update.message.photo[-1]
-        # Preguntar por el nombre de la foto y modificar
+        # Preguntar por el nombre de la foto y modificar (interactive_tools.py)
         path = prefix + "photo.png"
-
+        #gestión de carpetas
+        
         file_id = photo.file_id
         file_down = bot.get_file(file_id)
         file_down.download(path)
