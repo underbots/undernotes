@@ -10,4 +10,7 @@ Hi! This is a system to upload and download underground material.
 The option you have are:
 /start open a different inline operations
 /help show this usefull menssage
+Inline operation:  
+*Upload* upload to dropbox
+*Download* received a pdf (in proccess)
 """

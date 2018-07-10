@@ -19,16 +19,25 @@ from wearhouse.my_dropbox import upload_to_dropbox
 
 CHOOSING, TYPING_NAME, TYPING_REPLY = range(3)
 
-reply_keyboard = [['upload', 'download'],
+reply_keyboard = [['Upload', 'Download'],
                   ['Done']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
 ################## OPTIONS' FUNTIONS ######################
+def start(bot , update):
+    """ start messge: show help and load reply_markup
+    """
+    update.message.reply_text(help_ms , reply_markup=markup)
+    return CHOOSING
 
+def show_help(bot , update):
+    update.message.reply_text(help_ms)
+    
 def upload(bot, update):
     """
     Sent a massege quering for file's name
 """
+    print('have enter to upload')
     option = update.message.text
     update.message.reply_text(f'Let {option}, First tell me what it is')
 
@@ -60,16 +69,12 @@ def main():
 
     # Add conversation handler with the states
     conv_handler = ConversationHandler(
-        #entry_points=[CommandHandler('start', start)],
+        entry_points=[CommandHandler('start', start)],
 
         states={
-            CHOOSING: [RegexHandler('^upload$',upload ,pass_user_data=True)
-            ],
+            CHOOSING: [RegexHandler('^Upload$',upload ,pass_user_data=True)],
 
-            TYPING_NAME: [MessageHandler(Filters.text,
-                                           name_introduction,
-                                           pass_user_data=True),
-                            ],
+            TYPING_NAME: [MessageHandler(Filters.text, name_introduction, pass_user_data=True) ],
 
             #TYPING_REPLY: [MessageHandler(Filters.text,  received_information,  pass_user_data=True),   ],
         },
@@ -78,11 +83,11 @@ def main():
     )
 
     dp.add_handler(conv_handler)
-   # dp.add_handler(CommandHandler('help',))
+    dp.add_handler(CommandHandler('help',show_help))
 
 
     # log all errors
-    dp.add_error_handler(error)
+    #dp.add_error_handler(error)
 
     # Start the Bot
     updater.start_polling()
